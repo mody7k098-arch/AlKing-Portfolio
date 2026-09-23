@@ -55,7 +55,7 @@ const projects = [
       "Performance"
     ],
 
-    download: "#"
+    download: "https://www.mediafire.com/file/vikmmf3vnlx5rqk/ALKing-ShopX.jar/file"
   },
 
 
@@ -81,7 +81,7 @@ const projects = [
       "Formatting"
     ],
 
-    download: "#"
+    download: "https://www.mediafire.com/file/ipkc0gslvnbrtii/AlKingChat.jar/file"
   },
 
 
