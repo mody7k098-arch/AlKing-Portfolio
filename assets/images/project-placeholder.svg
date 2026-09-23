@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750">
+<defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#0b1118"/><stop offset="1" stop-color="#101b17"/></linearGradient><pattern id="p" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#78f5a4" stroke-opacity=".08"/></pattern></defs>
+<rect width="1200" height="750" fill="url(#g)"/><rect width="1200" height="750" fill="url(#p)"/>
+<circle cx="950" cy="150" r="250" fill="#78f5a4" opacity=".05"/><text x="80" y="350" fill="#78f5a4" font-family="monospace" font-size="34">ALKING / PROJECT</text><text x="80" y="410" fill="#647080" font-family="monospace" font-size="20">ADD YOUR PROJECT IMAGE</text>
+</svg>
