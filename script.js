@@ -36,13 +36,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (host.includes("youtube.com")) {
         const watchId = parsed.searchParams.get("v");
-        if (watchId) return watchId;
+
+        if (watchId) {
+          return watchId;
+        }
 
         const parts = parsed.pathname.split("/").filter(Boolean);
 
-        if (parts[0] === "shorts" && parts[1]) return parts[1];
-        if (parts[0] === "embed" && parts[1]) return parts[1];
-        if (parts[0] === "live" && parts[1]) return parts[1];
+        if (parts[0] === "shorts" && parts[1]) {
+          return parts[1];
+        }
+
+        if (parts[0] === "embed" && parts[1]) {
+          return parts[1];
+        }
+
+        if (parts[0] === "live" && parts[1]) {
+          return parts[1];
+        }
       }
     } catch (error) {
       console.warn("Invalid YouTube URL:", url);
@@ -56,24 +67,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!videoId) {
       const error = document.createElement("div");
+
       error.className = "media-error";
       error.textContent = "رابط YouTube غير صالح.";
+
       return error;
     }
 
     const wrapper = document.createElement("div");
+
     wrapper.className = "video-wrapper";
 
     const iframe = document.createElement("iframe");
-    iframe.src = `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?rel=0`;
+
+    iframe.src =
+      `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?rel=0`;
+
     iframe.title = "YouTube video";
     iframe.loading = "lazy";
     iframe.frameBorder = "0";
+
     iframe.allow =
       "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+
     iframe.allowFullscreen = true;
 
     wrapper.appendChild(iframe);
+
     return wrapper;
   }
 
@@ -83,15 +103,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function createLocalVideo(url) {
     const wrapper = document.createElement("div");
+
     wrapper.className = "video-wrapper";
 
     const video = document.createElement("video");
+
     video.src = url;
     video.controls = true;
     video.playsInline = true;
     video.preload = "metadata";
 
     wrapper.appendChild(video);
+
     return wrapper;
   }
 
@@ -101,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function createImage(url) {
     const img = document.createElement("img");
+
     img.src = url;
     img.alt = "Project image";
     img.loading = "lazy";
@@ -119,7 +143,9 @@ document.addEventListener("DOMContentLoaded", () => {
   ======================================== */
 
   function getMediaType(project) {
-    if (project.type) return project.type;
+    if (project.type) {
+      return project.type;
+    }
 
     if (Array.isArray(project.images) && project.images.length) {
       return "images";
@@ -131,6 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (project.video) {
       const id = getYouTubeId(project.video);
+
       return id ? "youtube" : "mp4";
     }
 
@@ -143,38 +170,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function createCardMedia(project) {
     const media = document.createElement("div");
+
     media.className = "project-media-card";
 
     const type = getMediaType(project);
 
     if (type === "images" && project.images?.length) {
       media.appendChild(createImage(project.images[0]));
+
       return media;
     }
 
     if (type === "image" && project.image) {
       media.appendChild(createImage(project.image));
+
       return media;
     }
 
-    if ((type === "youtube" || type === "video") && project.video) {
+    if (
+      (type === "youtube" || type === "video") &&
+      project.video
+    ) {
       const videoId = getYouTubeId(project.video);
 
       if (videoId) {
         const thumb = document.createElement("div");
+
         thumb.className = "youtube-thumbnail";
 
         const img = document.createElement("img");
-        img.src = `https://img.youtube.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`;
+
+        img.src =
+          `https://img.youtube.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`;
+
         img.alt = `${project.title} video`;
         img.loading = "lazy";
 
         const play = document.createElement("span");
+
         play.className = "video-play";
         play.textContent = "▶";
 
         thumb.appendChild(img);
         thumb.appendChild(play);
+
         media.appendChild(thumb);
       } else {
         media.appendChild(createLocalVideo(project.video));
@@ -185,10 +224,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (type === "mp4" && project.video) {
       media.appendChild(createLocalVideo(project.video));
+
       return media;
     }
 
-    media.appendChild(createImage("assets/images/project-placeholder.svg"));
+    media.appendChild(
+      createImage("assets/images/project-placeholder.svg")
+    );
+
     return media;
   }
 
@@ -197,14 +240,22 @@ document.addEventListener("DOMContentLoaded", () => {
   ======================================== */
 
   function renderModalMedia() {
-    if (!modalMedia || !currentProject) return;
+    if (!modalMedia || !currentProject) {
+      return;
+    }
 
     modalMedia.innerHTML = "";
 
     const type = getMediaType(currentProject);
 
-    if (type === "images" && currentProject.images?.length) {
+    /* ---------- IMAGES ---------- */
+
+    if (
+      type === "images" &&
+      currentProject.images?.length
+    ) {
       const imageBox = document.createElement("div");
+
       imageBox.className = "modal-image-box";
 
       const img = createImage(
@@ -215,71 +266,125 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (currentProject.images.length > 1) {
         const gallery = document.createElement("div");
+
         gallery.className = "modal-gallery";
 
         const previous = document.createElement("button");
+
         previous.type = "button";
         previous.className = "gallery-btn";
-        previous.setAttribute("aria-label", "الصورة السابقة");
+        previous.setAttribute(
+          "aria-label",
+          "الصورة السابقة"
+        );
         previous.textContent = "‹";
 
         const counter = document.createElement("span");
+
         counter.className = "gallery-counter";
+
         counter.textContent =
           `${currentImageIndex + 1} / ${currentProject.images.length}`;
 
         const next = document.createElement("button");
+
         next.type = "button";
         next.className = "gallery-btn";
-        next.setAttribute("aria-label", "الصورة التالية");
+        next.setAttribute(
+          "aria-label",
+          "الصورة التالية"
+        );
         next.textContent = "›";
 
         previous.addEventListener("click", (event) => {
           event.stopPropagation();
+
           currentImageIndex =
-            (currentImageIndex - 1 + currentProject.images.length) %
+            (
+              currentImageIndex -
+              1 +
+              currentProject.images.length
+            ) %
             currentProject.images.length;
+
           renderModalMedia();
         });
 
         next.addEventListener("click", (event) => {
           event.stopPropagation();
+
           currentImageIndex =
-            (currentImageIndex + 1) %
+            (
+              currentImageIndex + 1
+            ) %
             currentProject.images.length;
+
           renderModalMedia();
         });
 
         gallery.appendChild(previous);
         gallery.appendChild(counter);
         gallery.appendChild(next);
+
         imageBox.appendChild(gallery);
       }
 
       modalMedia.appendChild(imageBox);
+
       return;
     }
 
-    if (type === "image" && currentProject.image) {
+    /* ---------- SINGLE IMAGE ---------- */
+
+    if (
+      type === "image" &&
+      currentProject.image
+    ) {
       const imageBox = document.createElement("div");
+
       imageBox.className = "modal-image-box";
-      imageBox.appendChild(createImage(currentProject.image));
+
+      imageBox.appendChild(
+        createImage(currentProject.image)
+      );
+
       modalMedia.appendChild(imageBox);
+
       return;
     }
 
-    if ((type === "youtube" || type === "video") && currentProject.video) {
-      modalMedia.appendChild(createYouTube(currentProject.video));
+    /* ---------- YOUTUBE ---------- */
+
+    if (
+      (type === "youtube" || type === "video") &&
+      currentProject.video
+    ) {
+      modalMedia.appendChild(
+        createYouTube(currentProject.video)
+      );
+
       return;
     }
 
-    if (type === "mp4" && currentProject.video) {
-      modalMedia.appendChild(createLocalVideo(currentProject.video));
+    /* ---------- MP4 ---------- */
+
+    if (
+      type === "mp4" &&
+      currentProject.video
+    ) {
+      modalMedia.appendChild(
+        createLocalVideo(currentProject.video)
+      );
+
       return;
     }
+
+    /* ---------- PLACEHOLDER ---------- */
 
     modalMedia.appendChild(
-      createImage("assets/images/project-placeholder.svg")
+      createImage(
+        "assets/images/project-placeholder.svg"
+      )
     );
   }
 
@@ -289,38 +394,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function createProjectCard(project) {
     const card = document.createElement("article");
+
     card.className = "project-card reveal";
 
     const media = createCardMedia(project);
+
     card.appendChild(media);
 
     const info = document.createElement("div");
+
     info.className = "project-info";
 
     const meta = document.createElement("div");
+
     meta.className = "project-meta";
 
     const category = document.createElement("span");
-    category.textContent = project.category || "Project";
+
+    category.textContent =
+      project.category || "Project";
 
     const version = document.createElement("small");
-    version.textContent = project.version || "";
+
+    version.textContent =
+      project.version || "";
 
     meta.appendChild(category);
     meta.appendChild(version);
 
     const title = document.createElement("h3");
-    title.textContent = project.title || "Untitled Project";
+
+    title.textContent =
+      project.title || "Untitled Project";
 
     const description = document.createElement("p");
-    description.textContent = project.description || "";
+
+    description.textContent =
+      project.description || "";
 
     const chips = document.createElement("div");
+
     chips.className = "chips";
 
     (project.features || []).forEach((feature) => {
       const chip = document.createElement("span");
+
       chip.textContent = feature;
+
       chips.appendChild(chip);
     });
 
@@ -331,7 +451,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     card.appendChild(info);
 
-    card.addEventListener("click", () => openProject(project));
+    card.addEventListener("click", () => {
+      openProject(project);
+    });
 
     return card;
   }
@@ -342,76 +464,142 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderProjects() {
     if (!projectGrid) {
-      console.error('AlKing: لم يتم العثور على عنصر #projectGrid');
+      console.error(
+        "AlKing: لم يتم العثور على عنصر #projectGrid"
+      );
+
       return;
     }
 
     projectGrid.innerHTML = "";
 
     projects.forEach((project) => {
-      projectGrid.appendChild(createProjectCard(project));
+      projectGrid.appendChild(
+        createProjectCard(project)
+      );
     });
 
     initReveal(projectGrid);
   }
 
   /* ========================================
-     OPEN / CLOSE MODAL
+     OPEN MODAL
   ======================================== */
 
   function openProject(project) {
     currentProject = project;
     currentImageIndex = 0;
 
+    /* ---------- TAG ---------- */
+
     if (modalTag) {
       modalTag.textContent =
         `${project.category || "Project"} · ${project.version || ""}`;
     }
 
+    /* ---------- TITLE ---------- */
+
     if (modalTitle) {
-      modalTitle.textContent = project.title || "";
+      modalTitle.textContent =
+        project.title || "";
     }
 
+    /* ---------- DESCRIPTION ---------- */
+
     if (modalDescription) {
-      modalDescription.textContent = project.description || "";
+      modalDescription.textContent =
+        project.description || "";
     }
+
+    /* ---------- FEATURES ---------- */
 
     if (modalFeatures) {
       modalFeatures.innerHTML = "";
 
       (project.features || []).forEach((feature) => {
         const tag = document.createElement("span");
+
         tag.textContent = feature;
+
         modalFeatures.appendChild(tag);
       });
     }
 
+    /* ========================================
+       DOWNLOAD BUTTON
+    ======================================== */
+
     if (modalDownload) {
-      const validDownload =
-        project.download &&
-        project.download !== "#";
+      const downloadUrl =
+        typeof project.download === "string"
+          ? project.download.trim()
+          : "";
 
-      modalDownload.style.display =
-        validDownload ? "inline-flex" : "none";
+      if (
+        downloadUrl &&
+        downloadUrl !== "#"
+      ) {
+        modalDownload.href = downloadUrl;
 
-      if (validDownload) {
-        modalDownload.href = project.download;
+        modalDownload.target = "_blank";
+
+        modalDownload.rel =
+          "noopener noreferrer";
+
+        modalDownload.style.display =
+          "inline-flex";
+
+        modalDownload.textContent =
+          "تحميل المشروع ↗";
+      } else {
+        modalDownload.removeAttribute(
+          "href"
+        );
+
+        modalDownload.style.display =
+          "none";
       }
     }
 
+    /* ---------- MEDIA ---------- */
+
     renderModalMedia();
 
-    modal.classList.add("open");
-    modal.setAttribute("aria-hidden", "false");
-    document.body.classList.add("modal-open");
+    /* ---------- OPEN ---------- */
+
+    if (modal) {
+      modal.classList.add("open");
+
+      modal.setAttribute(
+        "aria-hidden",
+        "false"
+      );
+
+      document.body.classList.add(
+        "modal-open"
+      );
+    }
   }
 
+  /* ========================================
+     CLOSE MODAL
+  ======================================== */
+
   function closeModal() {
-    if (!modal) return;
+    if (!modal) {
+      return;
+    }
 
     modal.classList.remove("open");
-    modal.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("modal-open");
+
+    modal.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+    document.body.classList.remove(
+      "modal-open"
+    );
 
     if (modalMedia) {
       modalMedia.innerHTML = "";
@@ -420,83 +608,160 @@ document.addEventListener("DOMContentLoaded", () => {
     currentProject = null;
   }
 
-  modalClose?.addEventListener("click", closeModal);
-  modalBackdrop?.addEventListener("click", closeModal);
+  /* ========================================
+     MODAL EVENTS
+  ======================================== */
 
-  document.addEventListener("keydown", (event) => {
-    if (!currentProject) return;
+  modalClose?.addEventListener(
+    "click",
+    closeModal
+  );
 
-    if (event.key === "Escape") {
-      closeModal();
-      return;
-    }
+  modalBackdrop?.addEventListener(
+    "click",
+    closeModal
+  );
 
-    if (
-      currentProject.type === "images" &&
-      currentProject.images?.length > 1
-    ) {
-      if (event.key === "ArrowRight") {
-        currentImageIndex =
-          (currentImageIndex + 1) % currentProject.images.length;
-        renderModalMedia();
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (!currentProject) {
+        return;
       }
 
-      if (event.key === "ArrowLeft") {
-        currentImageIndex =
-          (currentImageIndex - 1 + currentProject.images.length) %
-          currentProject.images.length;
-        renderModalMedia();
+      /* ---------- ESC ---------- */
+
+      if (event.key === "Escape") {
+        closeModal();
+
+        return;
+      }
+
+      /* ---------- GALLERY ---------- */
+
+      if (
+        currentProject.type === "images" &&
+        currentProject.images?.length > 1
+      ) {
+        if (event.key === "ArrowRight") {
+          currentImageIndex =
+            (
+              currentImageIndex + 1
+            ) %
+            currentProject.images.length;
+
+          renderModalMedia();
+        }
+
+        if (event.key === "ArrowLeft") {
+          currentImageIndex =
+            (
+              currentImageIndex -
+              1 +
+              currentProject.images.length
+            ) %
+            currentProject.images.length;
+
+          renderModalMedia();
+        }
       }
     }
-  });
+  );
 
   /* ========================================
      MOBILE MENU
   ======================================== */
 
-  const menuButton = document.querySelector(".menu-btn");
-  const nav = document.querySelector(".nav");
+  const menuButton =
+    document.querySelector(".menu-btn");
 
-  menuButton?.addEventListener("click", () => {
-    nav?.classList.toggle("open");
-  });
+  const nav =
+    document.querySelector(".nav");
 
-  nav?.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      nav.classList.remove("open");
-    });
-  });
+  menuButton?.addEventListener(
+    "click",
+    () => {
+      nav?.classList.toggle("open");
+    }
+  );
+
+  nav?.querySelectorAll("a").forEach(
+    (link) => {
+      link.addEventListener(
+        "click",
+        () => {
+          nav.classList.remove("open");
+        }
+      );
+    }
+  );
 
   /* ========================================
-     REVEAL
+     REVEAL ANIMATION
   ======================================== */
 
   function initReveal(scope = document) {
-    const elements = scope.querySelectorAll(".reveal:not(.reveal-ready)");
+    const elements =
+      scope.querySelectorAll(
+        ".reveal:not(.reveal-ready)"
+      );
 
-    if (!("IntersectionObserver" in window)) {
-      elements.forEach((el) => el.classList.add("visible"));
+    if (
+      !("IntersectionObserver" in window)
+    ) {
+      elements.forEach((el) => {
+        el.classList.add("visible");
+      });
+
       return;
     }
 
-    const observer = new IntersectionObserver(
-      (entries, obs) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            entry.target.classList.add("reveal-ready");
-            obs.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.08 }
-    );
+    const observer =
+      new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add(
+                "visible"
+              );
 
-    elements.forEach((el) => observer.observe(el));
+              entry.target.classList.add(
+                "reveal-ready"
+              );
+
+              obs.unobserve(
+                entry.target
+              );
+            }
+          });
+        },
+        {
+          threshold: 0.08
+        }
+      );
+
+    elements.forEach((el) => {
+      observer.observe(el);
+    });
   }
-const year = document.getElementById("year");
-  if (year) year.textContent = new Date().getFullYear();
+
+  /* ========================================
+     FOOTER YEAR
+  ======================================== */
+
+  const year =
+    document.getElementById("year");
+
+  if (year) {
+    year.textContent =
+      new Date().getFullYear();
+  }
+
+  /* ========================================
+     START
+  ======================================== */
 
   renderProjects();
+
   initReveal();
 });
