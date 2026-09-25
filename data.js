@@ -40,20 +40,19 @@ const projects = [
   },
 
   {
-    title: "BoxPvP Core",
+    title: "AlKing Login",
     category: "Server System",
     version: "Paper 1.21.x",
     type: "image",
     image:
       "assets/images/project-placeholder.svg",
     description:
-      "نظام أساس لـBoxPvP يركز على الـGameplay والاقتصاد والمكافآت وإدارة تجربة اللاعب.",
+      "عمل نظام login . register كامل و مشفر ",
     features: [
-      "PvP",
-      "Economy",
-      "Rewards",
-      "GUI"
+      "Login",
+      "server system",
+      "SQligth",
     ],
-    download: "#"
+    download: "https://www.mediafire.com/file/89jimq0v5ltpqoh/AlKing+Login+V2.jar/file"
   }
 ];
